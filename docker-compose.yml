@@ -1,9 +1,13 @@
-version: '5.0'
 services:
   frontend:
-    build: .
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    build: ./Frontend
     ports:
       - "5000:5000"
+    networks:
+      - backend
   rabbitmq:
     image: rabbitmq:management
     container_name: rabbitmq
@@ -14,8 +18,19 @@ services:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: secure_password
     volumes:
-      - rabbitmq_data:./rabbitmq/data
-      - rabbitmq_log:./rabbitmq/log
+      - rabbitmq_data:/var/lib/rabbitmq
+      - rabbitmq_log:/var/log/rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      - backend
+ 
+networks:
+  backend:
+    driver: bridge
 
 volumes:
   rabbitmq_data:
