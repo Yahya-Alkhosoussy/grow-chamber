@@ -1,4 +1,7 @@
 use amiquip::{Connection, Exchange, Publish, Result};
+use image::ImageReader;
+
+
 
 fn main() -> Result<()> {
     // Open connection.
@@ -10,10 +13,16 @@ fn main() -> Result<()> {
     // Get a handle to the direct exchange on our channel.
     let exchange = Exchange::direct(&channel);
 
+    let contents = ImageReader::open("./images/image.jpg")
+        .unwrap()
+        .decode()
+        .unwrap();
+        
+    println!("Sending Image...");
+    
+    exchange.publish(Publish::new(contents.as_bytes(), "images"))?;
+    
     // Publish a message to the "hello" queue.
-    exchange.publish(Publish::new("hello there".as_bytes(), "hello"))?;
-
-    println!("Connected!!!!! Yipppeeeee");
 
     connection.close()
 }

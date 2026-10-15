@@ -1,4 +1,18 @@
 services:
+  backend:
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    build: ./Backend
+    networks:
+      - backend
+  image_processing:
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    build: ./ImageProcessing
+    networks:
+      - backend
   frontend:
     depends_on:
       rabbitmq:
@@ -20,6 +34,7 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
       - rabbitmq_log:/var/log/rabbitmq
+      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
     healthcheck:
       test: rabbitmq-diagnostics check_port_connectivity
       interval: 1s

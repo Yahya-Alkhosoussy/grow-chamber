@@ -17,7 +17,7 @@ RUN apk add --no-cache gcc musl-dev linux-headers
 COPY requirements.txt .
 
 # Install the Python dependencies
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the current directory `.` in the project to the workdir `.` in the image
 COPY . .
