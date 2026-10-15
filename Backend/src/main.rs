@@ -1,7 +1,6 @@
 use amiquip::{Connection, Exchange, Publish, Result};
-use image::ImageReader;
-
-
+use std::fs::File;
+use std::io::Read;
 
 fn main() -> Result<()> {
     // Open connection.
@@ -13,14 +12,20 @@ fn main() -> Result<()> {
     // Get a handle to the direct exchange on our channel.
     let exchange = Exchange::direct(&channel);
 
-    let contents = ImageReader::open("./images/image.jpg")
-        .unwrap()
-        .decode()
+    let mut file = File::open("./images/image.jpg")
         .unwrap();
+
+    let mut buffer = Vec::new();
+
+    file.read_to_end(&mut buffer).unwrap();
         
     println!("Sending Image...");
+
+    let first_few = &buffer.as_slice()[..3];
+
+    println!("{:#?}", first_few);
     
-    exchange.publish(Publish::new(contents.as_bytes(), "images"))?;
+    exchange.publish(Publish::new(buffer.as_slice(), "images"))?;
     
     // Publish a message to the "hello" queue.
 
