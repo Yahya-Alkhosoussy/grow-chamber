@@ -1,0 +1,20 @@
+<!-- This is the base file everything will include/import -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title %}Duckweed check{% endblock %}</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
+    </head>
+    <body>
+        <header class="set-header">
+            <div class="header-left">
+                {% block header_left %}{% endblock %}
+            </div>
+            <div class="header-right">
+                {% block header_right %}{% endblock %}
+            </div>
+        </header>
+
+        {% block content %}{% endblock %}
+    </body>
+</html>
