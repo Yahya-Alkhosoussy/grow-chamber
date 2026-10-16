@@ -1,5 +1,5 @@
 import pika
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
@@ -10,4 +10,4 @@ channel = connection.channel()
 
 @app.route("/")
 def hello():
-    return "Hello from Docker!\n"
+    return render_template("index.html")
